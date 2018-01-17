@@ -12,8 +12,6 @@ services:
         command: storm nimbus
         depends_on:
             - zookeeper
-        links:
-            - zookeeper
         restart: always
         ports:
             - 6627:6627
@@ -24,9 +22,6 @@ services:
         depends_on:
             - nimbus
             - zookeeper
-        links:
-            - nimbus
-            - zookeeper
         restart: always
 
     ui:
@@ -34,8 +29,20 @@ services:
         command: storm ui
         depends_on:
             - nimbus
-        links:
-            - zookeeper
         restart: always
         ports:
             - 8080:8080
+
+    kafka:
+        image: wurstmeister/kafka
+        depends_on:
+            - zookeeper
+        ports:
+            - 9092:9092
+        environment:
+          HOSTNAME_COMMAND: "hostname -I | awk -F' ' '{print $$1}'"
+          KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+          KAFKA_CREATE_TOPICS: "test.command:1:1,test.warm.request:1:1,test.warm.response:1:1"
+          KAFKA_ADVERTISED_PORT: 9092
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock

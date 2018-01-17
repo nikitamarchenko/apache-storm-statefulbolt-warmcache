@@ -78,7 +78,7 @@ public class TopologyProperties {
 		
 		int topologyBatchEmitMillis = Integer.parseInt(
 				properties.getProperty("storm.topology.batch.interval.miliseconds","2000"));
-		String nimbusHost = properties.getProperty("storm.nimbus.host","localhost");
+		//String nimbusHost = properties.getProperty("storm.nimbus.host","localhost");
 		String nimbusPort = properties.getProperty("storm.nimbus.port","6627");
 		
 		// How often a batch can be emitted in a Trident topology.
@@ -86,7 +86,11 @@ public class TopologyProperties {
 		stormConfig.setNumWorkers(stormWorkersNumber);
 		stormConfig.setMaxTaskParallelism(maxTaskParallism);
 		// Storm cluster specific properties
-		stormConfig.put(Config.NIMBUS_HOST, nimbusHost);
+		//stormConfig.put(Config.NIMBUS_HOST, nimbusHost);
+
+		List<String> nimbus_seeds = new ArrayList<String>();
+		nimbus_seeds.add("nimbus");
+		stormConfig.put(Config.NIMBUS_SEEDS, nimbus_seeds);
 		stormConfig.put(Config.NIMBUS_THRIFT_PORT, Integer.parseInt(nimbusPort));
 
 		stormConfig.put(Config.TOPOLOGY_MAX_SPOUT_PENDING,
@@ -114,6 +118,8 @@ public class TopologyProperties {
         // register metric consumer
         //stormConfig.registerMetricsConsumer(JMXMetricConsumer.class, 1);
         stormConfig.registerMetricsConsumer(LoggingMetricsConsumer.class, 1);
+
+		//stormConfig.setDebug(true);
 	}
 
 	private static int parseZkPort(String zkNodes) 

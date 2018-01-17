@@ -69,4 +69,4 @@ buildNumber.properties
 .mvn/timing.properties
 
 apache-storm-statefulbolt-test.iml
-src/main/resources/
+
